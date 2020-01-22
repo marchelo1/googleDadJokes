@@ -1,12 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+class App extends React.Component {
+  constructor() {
+    super();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+    this.state = {
+      joke: null
+    };
+
+    this.onTellJokes = this.onTellJokes.bind(this);
+  }
+
+  onTellJokes() {
+    fetch('https://icanhazdadjoke.com/', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({ joke: json.joke });
+      });
+  }
+
+  render() {
+    console.log('---RENDER---');
+    return (
+      <div>
+        <button onClick={this.onTellJokes}> Tell me a joke </button>
+        <p>{this.state.joke}</p>
+      </div>
+    );
+  }
+}
+
+const rootElement = document.getElementById('root');
+ReactDOM.render(<App />, rootElement);
+
 serviceWorker.unregister();
